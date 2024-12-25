@@ -1,0 +1,13 @@
+---
+domain_name: "nas.lan"
+nameservers:
+  - ns1.nas.lan.
+  - ns2.nas.lan.
+server_ip: "{{ ansible_default_ipv4.address }}"
+traefik_ip: "{{ server_ip }}"
+ttl: 86400
+# Automatic generation of serial number (format: YYYYMMDDSS)
+soa_serial: "{{ (ansible_date_time.date | replace('-', '') + ansible_date_time.second) | int }}"
+services:
+  - name: uptime
+    ip: "{{ traefik_ip }}"

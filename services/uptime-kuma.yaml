@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    environment:
+      - NODE_ENV=production
+    # volumes:
+    #   - uptime-kuma-data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime.rule=Host(`uptime.nas.lan`)"
+      - "traefik.http.services.uptime.loadbalancer.server.port=3001"
+    networks:
+      - web
+    restart: always
+
+networks:
+  web:
+    driver: bridge

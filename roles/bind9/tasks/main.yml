@@ -1,0 +1,77 @@
+---
+- name: Update package list
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install BIND9 and required tools
+  ansible.builtin.apt:
+    name:
+      - bind9
+      - bind9utils
+      - dnsutils
+    state: present
+
+- name: Ensure BIND9 service is started
+  ansible.builtin.systemd:
+    name: bind9
+    state: started
+    enabled: yes
+
+- name: Check BIND9 version
+  command: named -v
+  register: bind_version
+  failed_when: bind_version.rc != 0
+
+- name: Configure DNS zone
+  ansible.builtin.copy:
+    content: |
+      $TTL {{ ttl }}          ; Default TTL for records (1 day)
+      @    IN    SOA   {{ nameservers[0] }} admin.{{ domain_name }}. (
+                  {{ soa_serial }} ; Serial number
+                  3600       ; Refresh (1 hour)
+                  1800       ; Retry (30 minutes)
+                  1209600    ; Expiry (2 weeks)
+                  86400 )    ; Minimum TTL (1 day)
+
+            IN    NS    {{ nameservers[0] }}
+            IN    NS    {{ nameservers[1] }}
+
+      ; A records for name servers
+      ns1  IN    A     {{ server_ip }}  ; IP of ns1 (primary name server)
+      ns2  IN    A     {{ server_ip }}  ; IP of ns2 (secondary name server)
+
+      ; A record for the primary domain (example.com)
+      @    IN    A     {{ server_ip }}  ; IP address of the main server
+
+      ; Wildcard record for the primary domain (*.example.com)
+      *       IN    A     {{ server_ip }}
+
+      ; CNAME record (alias)
+      www  IN    CNAME  {{ domain_name }}.   ; www.example.com points to example.com
+
+      ; A record for the Traefik service
+      {% for record in services %}
+      {{ record.name }}    IN    A     {{ record.ip }}  ; {{ record.name }} points to {{ record.ip }}
+      {% endfor %}
+    dest: /etc/bind/db.{{ domain_name }}
+    owner: root
+    group: bind
+    mode: '0644'
+
+- name: Configure named.conf.local file
+  ansible.builtin.blockinfile:
+    path: /etc/bind/named.conf.local
+    block: |
+      zone "{{ domain_name }}" {
+        type master;
+        file "/etc/bind/db.{{ domain_name }}";
+      };
+
+- name: Ensure BIND9 service is started
+  ansible.builtin.systemd:
+    name: bind9
+    state: started
+    enabled: yes
+  notify:
+    - Restart bind9
