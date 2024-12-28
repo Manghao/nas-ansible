@@ -11,3 +11,5 @@ soa_serial: "{{ (ansible_date_time.date | replace('-', '') + ansible_date_time.s
 services:
   - name: uptime
     ip: "{{ traefik_ip }}"
+  - name: dockge
+    ip: "{{ traefik_ip }}"
