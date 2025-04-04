@@ -86,13 +86,6 @@
   register: compose_version
   failed_when: compose_version.rc != 0
 
-- name: Run Docker Compose (if needed)
-  ansible.builtin.shell: docker compose -f /home/{{ ansible_env.USER }}/docker-compose.yml up -d
-  become: yes
-  become_user: "{{ ansible_env.USER }}"
-  args:
-    creates: /home/{{ ansible_env.USER }}/docker-compose.yml
-
 - name: Find all compose files
   ansible.builtin.find:
     paths: "/home/nas/nas-ansible/services/"
