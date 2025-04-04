@@ -93,7 +93,9 @@
   register: compose_files
 
 - name: Run Docker Compose for each file
-  ansible.builtin.shell: "docker compose -f {{ item.path }} up -d"
+  ansible.builtin.shell: |
+    export DOCKER_HOST=unix:///var/run/docker.sock
+    docker compose -f {{ item.path }} up -d
   args:
     chdir: "/home/nas/nas-ansible/services/"
   loop: "{{ compose_files.files }}"
