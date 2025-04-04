@@ -101,5 +101,7 @@
 
 - name: Run Docker Compose for each file
   ansible.builtin.shell: "docker compose -f {{ item.path }} up -d"
+  args:
+    chdir: "/home/nas/nas-ansible/services/"
   loop: "{{ compose_files.files }}"
   when: compose_files.files | length > 0
