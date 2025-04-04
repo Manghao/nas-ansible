@@ -8,10 +8,10 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-    volumes:
-      # - ./config/radarr:/config
-      # - ./medias/movies:/movies
-      # - ./downloads:/downloads
+    # volumes:
+    #   - ./config/radarr:/config
+    #   - ./medias/movies:/movies
+    #   - ./downloads:/downloads
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`radarr.nas.lan`)"
