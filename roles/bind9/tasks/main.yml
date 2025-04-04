@@ -27,6 +27,7 @@
   ansible.builtin.find:
     paths: "/home/nas/nas-ansible/services/"
     patterns: "*.yml"
+    recurse: true
   register: compose_files
 
 - name: Initialize services list
