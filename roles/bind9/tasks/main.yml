@@ -35,7 +35,7 @@
 
 - name: Add each service from filename
   ansible.builtin.set_fact:
-    services: "{{ services + [ { 'name': item.path | basename | regex_replace('\\.ya?ml$', ''), 'ip': traefik_ip } ] }}"
+    services: "{{ services + [ { 'name': item.path | basename | regex_replace('\\.ya?ml$', ''), 'ip': server_ip } ] }}"
   loop: "{{ compose_files.files }}"
 
 - name: Configure DNS zone
