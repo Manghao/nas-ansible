@@ -57,7 +57,7 @@
 - name: Add the current user to the Docker group
   ansible.builtin.user:
     name: "{{ ansible_env.USER }}"
-    group: docker
+    groups: docker
     append: yes
 
 - name: Update the session to reflect the group change
