@@ -29,15 +29,20 @@
     patterns: "*.yml"
   register: compose_files
 
-- name: Set dynamic services list from compose filenames
+- name: Extract service names from filenames
   ansible.builtin.set_fact:
-    services: >-
+    service_names: >-
       {{ compose_files.files
          | map(attribute='path')
          | map('basename')
-         | map('regex_replace', '\\.yml$', '')
-         | map('community.general.dict_kv', 'ip', traefik_ip)
+         | map('regex_replace', '\\.ya?ml$', '')
          | list }}
+
+- name: Build services list dynamically
+  ansible.builtin.set_fact:
+    services: >-
+      {{ service_names | map('extract', {'name': '', 'ip': traefik_ip}) |
+         map('combine', [{'name': item, 'ip': traefik_ip} for item in service_names]) | list }}
 
 - name: Configure DNS zone
   ansible.builtin.copy:
