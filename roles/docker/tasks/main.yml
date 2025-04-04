@@ -75,3 +75,31 @@
   ansible.builtin.command: docker --version
   register: docker_version
   failed_when: docker_version.rc != 0
+
+- name: Install Docker Compose plugin
+  ansible.builtin.apt:
+    name: docker-compose-plugin
+    state: present
+
+- name: Verify Docker Compose installation
+  ansible.builtin.command: docker compose version
+  register: compose_version
+  failed_when: compose_version.rc != 0
+
+- name: Run Docker Compose (if needed)
+  ansible.builtin.shell: docker compose -f /home/{{ ansible_env.USER }}/docker-compose.yml up -d
+  become: yes
+  become_user: "{{ ansible_env.USER }}"
+  args:
+    creates: /home/{{ ansible_env.USER }}/docker-compose.yml
+
+- name: Find all compose files
+  ansible.builtin.find:
+    paths: "/home/{{ ansible_env.USER }}/nas-ansible/services/"
+    patterns: "*.yml"
+  register: compose_files
+
+- name: Run Docker Compose for each file
+  ansible.builtin.shell: "docker compose -f {{ item.path }} up -d"
+  loop: "{{ compose_files.files }}"
+  when: compose_files.files | length > 0

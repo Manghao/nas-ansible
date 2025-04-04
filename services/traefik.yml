@@ -12,6 +12,10 @@ services:
       - "8080:8080" # Dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.nas.lan`)"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     networks:
       - web
     restart: always
