@@ -94,13 +94,7 @@
 
 - name: Echo the path of each compose file
   ansible.builtin.shell: |
-    echo "Path of the compose file: {{ item.path }}"
-  args:
-    chdir: "/home/nas/nas-ansible/services/"
-  loop: "{{ compose_files.files }}"
+    docker compose -f /home/nas/nas-ansible/services/dockge.yml up -d
+  # loop: "{{ compose_files.files }}"
   when: compose_files.files | length > 0
-  register: result
-
-- name: Debug the result of Docker Compose command
-  ansible.builtin.debug:
-    var: result
+  
