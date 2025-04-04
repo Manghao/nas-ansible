@@ -95,7 +95,7 @@
 
 - name: Find all compose files
   ansible.builtin.find:
-    paths: "/home/{{ lookup('env','USER') }}/nas-ansible/services/"
+    paths: "/home/nas/nas-ansible/services/"
     patterns: "*.yml"
   register: compose_files
 
