@@ -18,8 +18,6 @@ services:
       - traefik.http.services.radarr.loadbalancer.server.port=7878
     networks:
       - web
-    dns:
-      - 127.0.0.1
     restart: always
 
 networks:
