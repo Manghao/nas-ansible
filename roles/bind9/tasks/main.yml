@@ -23,6 +23,22 @@
   register: bind_version
   failed_when: bind_version.rc != 0
 
+- name: Find all compose files
+  ansible.builtin.find:
+    paths: "/home/nas/nas-ansible/services/"
+    patterns: "*.yml"
+  register: compose_files
+
+- name: Set dynamic services list from compose filenames
+  ansible.builtin.set_fact:
+    services: >-
+      {{ compose_files.files
+         | map(attribute='path')
+         | map('basename')
+         | map('regex_replace', '\\.yml$', '')
+         | map('community.general.dict_kv', 'ip', traefik_ip)
+         | list }}
+
 - name: Configure DNS zone
   ansible.builtin.copy:
     content: |

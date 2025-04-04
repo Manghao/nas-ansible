@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+  dockge:
+    image: louislam/dockge:latest
+    container_name: dockge
+    environment:
+      - DOCKGE_STACKS_DIR=/opt/stacks
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/stacks:/opt/stacks
+    #   - dockge-data:/app/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dockge.rule=Host(`dockge.nas.lan`)"
+      - "traefik.http.services.dockge.loadbalancer.server.port=5001"
+    networks:
+      - web
+    restart: always
+
+networks:
+  web:
+    driver: bridge
