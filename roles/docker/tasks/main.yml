@@ -90,6 +90,7 @@
   ansible.builtin.find:
     paths: "/home/nas/nas-ansible/services/"
     patterns: "*.yml"
+    recurse: true
   register: compose_files
 
 - name: Echo the path of each compose file
