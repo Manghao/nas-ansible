@@ -16,9 +16,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.radarr.rule=Host(`radarr.nas.lan`)"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
-    restart: always
     networks:
       - web
+    restart: always
 
 networks:
   web:
