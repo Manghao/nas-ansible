@@ -92,10 +92,9 @@
     patterns: "*.yml"
   register: compose_files
 
-- name: Run Docker Compose for each file
+- name: Echo the path of each compose file
   ansible.builtin.shell: |
-    export DOCKER_HOST=unix:///var/run/docker.sock
-    docker compose -f {{ item.path }} up -d
+    echo "Path of the compose file: {{ item.path }}"
   args:
     chdir: "/home/nas/nas-ansible/services/"
   loop: "{{ compose_files.files }}"
