@@ -9,7 +9,7 @@
   roles:
     - docker
 
-- name: OpenVPN installation
-  hosts: nas
-  roles:
-    - openvpn
+# - name: OpenVPN installation
+#   hosts: nas
+#   roles:
+#     - openvpn
