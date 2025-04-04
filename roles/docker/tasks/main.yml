@@ -93,7 +93,7 @@
     recurse: true
   register: compose_files
 
-- name: Echo the path of each compose file
+- name: Install each compose file
   ansible.builtin.shell: |
     docker compose -f {{item.path}} up -d
   loop: "{{ compose_files.files }}"
