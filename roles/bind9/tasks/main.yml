@@ -90,7 +90,7 @@
       options {
         directory "/var/cache/bind";
 
-        listen-on { 127.0.0.1; {{ server_ip }} };
+        listen-on { 127.0.0.1; {{ server_ip }}; };
         listen-on-v6 { ::1; };
 
         allow-query { localhost; };
