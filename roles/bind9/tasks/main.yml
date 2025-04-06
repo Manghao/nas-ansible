@@ -83,23 +83,15 @@
         type master;
         file "/etc/bind/db.{{ domain_name }}";
       };
+
 - name: Configure named.conf.options file
-  ansible.builtin.blockinfile:
-    path: /etc/bind/named.conf.options
-    block: |
-      options {
-        directory "/var/cache/bind";
+  ansible.builtin.template:
+    src: named.conf.options.j2
+    dest: /etc/bind/named.conf.options
+    owner: root
+    group: root
+    mode: '0644'
 
-        listen-on { 127.0.0.1; {{ server_ip }}; };
-        listen-on-v6 { ::1; };
-
-        allow-query { localhost; };
-        allow-query-cache { localhost; };
-
-        dnssec-validation auto;
-
-        tcp-listen-queue 32;
-      };
 
 - name: Ensure BIND9 service is started
   ansible.builtin.systemd:
