@@ -1,0 +1,4 @@
+- name: Swift installation
+  hosts: nas
+  roles:
+    - swift

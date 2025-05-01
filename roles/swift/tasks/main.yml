@@ -27,7 +27,6 @@
 - name: Include Vault secrets
   include_vars:
     file: "{{ playbook_dir }}/../vaults/swift-secrets.yaml"
-  no_log: true
 
 - name: Try swift connection and check exit code
   ansible.builtin.shell: |
@@ -45,7 +44,6 @@
   register: swift_connection
   failed_when: swift_connection.stdout | int != 0
   changed_when: false
-  no_log: true
 
 - name: Show result of Swift connection
   ansible.builtin.debug:

@@ -1,0 +1,5 @@
+---
+- name: Bind9 installation
+  hosts: nas
+  roles:
+    - bind9
