@@ -24,9 +24,12 @@
         The 'swift' command is not installed or not in PATH.
       {% endif %}
 
-- name: Try swift connection and check exit code
+- name: Include Vault secrets
   include_vars:
-    file: vaults/swift-secrets.yaml
+    file: "{{ playbook_dir }}/vaults/swift-secrets.yaml"
+  no_log: true
+
+- name: Try swift connection and check exit code
   ansible.builtin.shell: |
     swift stat
     echo $?
