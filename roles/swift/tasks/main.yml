@@ -45,7 +45,6 @@
   register: swift_connection
   failed_when: swift_connection.stdout | int != 0
   changed_when: false
-  no_log: true
 
 - name: Show result of Swift connection
   ansible.builtin.debug:
