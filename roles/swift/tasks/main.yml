@@ -1,0 +1,46 @@
+---
+- name: Update package list
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install python3-swiftclient and required tools
+  ansible.builtin.apt:
+    name:
+      - python3-swiftclient
+    state: present
+
+- name: Check if 'swift' command is installed
+  ansible.builtin.command: command -v swift
+  register: swift_check
+  ignore_errors: yes
+
+- name: Show result of 'swift' command check
+  ansible.builtin.debug:
+    msg: >-
+      {% if swift_check.rc == 0 %}
+        The 'swift' command is available at: {{ swift_check.stdout }}
+      {% else %}
+        The 'swift' command is not installed or not in PATH.
+      {% endif %}
+
+- name: Try swift connection
+  ansible.builtin.shell: |
+    swift stat
+  environment:
+    OS_AUTH_URL: "{{ auth_url }}"
+    OS_USERNAME: "{{ os_username }}"
+    OS_PASSWORD: "{{ os_password }}"
+    OS_PROJECT_NAME: "{{ os_project_name }}"
+    OS_USER_DOMAIN_NAME: "{{ default_container }}"
+    OS_PROJECT_DOMAIN_NAME: "{{ default_container }}"
+    OS_REGION_NAME: "{{ region_name }}"
+    OS_IDENTITY_API_VERSION: "{{ api_version }}"
+  register: swift_connection
+  failed_when: swift_connection.rc != 0
+  changed_when: false
+  no_log: true
+
+- name: Show result of Swift connection
+  ansible.builtin.debug:
+    msg: "Swift connection successful!"

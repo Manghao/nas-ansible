@@ -9,6 +9,11 @@
   roles:
     - docker
 
+- name: Swift installation
+  hosts: nas
+  roles:
+    - swift
+
 # - name: OpenVPN installation
 #   hosts: nas
 #   roles:
