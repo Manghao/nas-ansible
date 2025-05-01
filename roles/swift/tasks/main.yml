@@ -25,6 +25,8 @@
       {% endif %}
 
 - name: Try swift connection and check exit code
+  include_vars:
+    file: vaults/secrets.yml
   ansible.builtin.shell: |
     swift stat
     echo $?
@@ -38,7 +40,7 @@
     OS_REGION_NAME: "{{ os_region_name }}"
     OS_IDENTITY_API_VERSION: "{{ os_api_version }}"
   register: swift_connection
-  failed_when: swift_connection.stdout | int != 0 
+  failed_when: swift_connection.stdout | int != 0
   changed_when: false
   no_log: true
 
