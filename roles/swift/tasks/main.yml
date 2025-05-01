@@ -27,6 +27,7 @@
 - name: Include Vault secrets
   include_vars:
     file: "{{ playbook_dir }}/../vaults/swift-secrets.yaml"
+  no_log: true
 
 - name: Try swift connection and check exit code
   ansible.builtin.shell: |
@@ -44,7 +45,30 @@
   register: swift_connection
   failed_when: swift_connection.stdout | int != 0
   changed_when: false
+  no_log: true
 
 - name: Show result of Swift connection
   ansible.builtin.debug:
     msg: "Swift connection successful!"
+
+- name: Create 'backup' container
+  ansible.builtin.shell: |
+    swift post backup
+  environment:
+    OS_AUTH_URL: "{{ os_auth_url }}"
+    OS_USERNAME: "{{ os_username }}"
+    OS_PASSWORD: "{{ os_password }}"
+    OS_PROJECT_NAME: "{{ os_project_name }}"
+    OS_USER_DOMAIN_NAME: "{{ os_user_domain_name }}"
+    OS_PROJECT_DOMAIN_NAME: "{{ os_project_domain_name }}"
+    OS_REGION_NAME: "{{ os_region_name }}"
+    OS_IDENTITY_API_VERSION: "{{ os_api_version }}"
+  register: swift_connection
+  failed_when: swift_connection.rc != 0
+  changed_when: swift_connection.rc == 0
+  no_log: true 
+
+- name: Show result of container creation
+  ansible.builtin.debug:
+    msg: "Swift container 'backup' creation was successful!"
+  when: swift_connection.rc == 0
