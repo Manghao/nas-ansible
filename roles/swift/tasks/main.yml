@@ -26,7 +26,7 @@
 
 - name: Try swift connection and check exit code
   include_vars:
-    file: vaults/secrets.yml
+    file: vaults/swift-secrets.yaml
   ansible.builtin.shell: |
     swift stat
     echo $?
