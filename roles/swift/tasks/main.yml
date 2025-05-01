@@ -51,9 +51,17 @@
   ansible.builtin.debug:
     msg: "Swift connection successful!"
 
-- name: Create 'backup' container
+- name: Check if 'backup' container exists
+  ansible.builtin.shell: |
+    swift stat backup
+  register: container_check
+  failed_when: false
+  changed_when: false
+
+- name: Create 'backup' container if it doesn't exist
   ansible.builtin.shell: |
     swift post backup
+  when: container_check.rc != 0
   environment:
     OS_AUTH_URL: "{{ os_auth_url }}"
     OS_USERNAME: "{{ os_username }}"
@@ -65,10 +73,10 @@
     OS_IDENTITY_API_VERSION: "{{ os_api_version }}"
   register: swift_connection
   failed_when: swift_connection.rc != 0
-  changed_when: swift_connection.rc == 0
-  no_log: true 
+  changed_when: true
+  no_log: true
 
 - name: Show result of container creation
   ansible.builtin.debug:
-    msg: "Swift container 'backup' creation was successful!"
+    msg: "Swift container 'backup' was successfully created!"
   when: swift_connection.rc == 0
