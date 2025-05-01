@@ -11,7 +11,7 @@
     state: present
 
 - name: Check if 'swift' command is installed
-  ansible.builtin.command: command -v swift
+  ansible.builtin.command: which swift
   register: swift_check
   ignore_errors: yes
 
@@ -28,14 +28,14 @@
   ansible.builtin.shell: |
     swift stat
   environment:
-    OS_AUTH_URL: "{{ auth_url }}"
+    OS_AUTH_URL: "{{ os_auth_url }}"
     OS_USERNAME: "{{ os_username }}"
     OS_PASSWORD: "{{ os_password }}"
     OS_PROJECT_NAME: "{{ os_project_name }}"
-    OS_USER_DOMAIN_NAME: "{{ default_container }}"
-    OS_PROJECT_DOMAIN_NAME: "{{ default_container }}"
-    OS_REGION_NAME: "{{ region_name }}"
-    OS_IDENTITY_API_VERSION: "{{ api_version }}"
+    OS_USER_DOMAIN_NAME: "{{ os_user_domain_name }}"
+    OS_PROJECT_DOMAIN_NAME: "{{ os_project_domain_name }}"
+    OS_REGION_NAME: "{{ os_region_name }}"
+    OS_IDENTITY_API_VERSION: "{{ os_api_version }}"
   register: swift_connection
   failed_when: swift_connection.rc != 0
   changed_when: false
